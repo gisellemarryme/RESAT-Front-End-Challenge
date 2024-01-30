@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body{
+        text-align:center;
+        margin: 0;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        height: 100vh;
+        background-color: #037503;
+    }
+
+     #container{ 
+        width:90%;
+        max-width:800px;
+        padding:30px;
+        background-color:#ffe600;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    } 
+
+    #input-container {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    #timer-container {
+       display:none;
+       text-align: center;
+    }
+
+    input{
+        padding:10px;
+        width:60px;
+        margin-bottom:20px;
+        font-size:25px;
+    }
+
+    label{
+        font-size:30px;
+    }
+
+    button {
+      display: inline-block;
+      margin: 15px;
+      padding: 20px;
+      background-color: #000000;
+      color: rgb(255, 196, 0);
+      border: 1px solid black;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size:18px;
+    }
+
+  </style>
+  <title>Countdown Timer</title>
+</head>
+<body>
+
+  <div id="input-container">
+    <label for="hours">시: </label>  
+    <input type="number" id="hours" min="0" value="0">
+    
+    <label for="minutes">&nbsp; 분: </label>  
+    <input type="number" id="minutes" min="0" value="0">
+    
+    <label for="seconds">&nbsp; 초: </label>  
+    <input type="number" id="seconds" min="0" value="0">
+    
+    <br> <!--줄바꿈-->
+    <br>
+    <button onclick="startCountdown()">START</button>
+    <button onclick="stopCountdown()">STOP</button>
+    <button onclick="resetCountdown()">RESET</button>
+  </div>
+
+  <div id="timer-container">
+    <p id="timer">00:00:00</p>
+    <button onclick="startCountdown()">START</button>
+    <button onclick="stopCountdown()">STOP</button>
+    <button onclick="resetCountdown()">RESET</button>
+  </div>
+
+  <script>
+    let timeLeft;
+    let countdownInterval;
+
+    function startCountdown() {
+      const inputContainer = document.getElementById('input-container');
+      const timerContainer = document.getElementById('timer-container');
+      const hoursInput = document.getElementById('hours');
+      const minutesInput = document.getElementById('minutes');
+      const secondsInput = document.getElementById('seconds');
+
+      timeLeft = (parseInt(hoursInput.value) * 3600) + (parseInt(minutesInput.value) * 60) + parseInt(secondsInput.value);
+
+      inputContainer.style.display = 'none';
+      timerContainer.style.display = 'block';
+
+      updateTimerDisplay();
+
+      countdownInterval = setInterval(function () {
+        if (timeLeft <= 0) {
+          clearInterval(countdownInterval);
+          alert('타이머 종료');
+        } else {
+          timeLeft--;
+          updateTimerDisplay();
+        }
+      }, 1000);
+    }
+
+    function stopCountdown() {
+      clearInterval(countdownInterval);
+      alert('타이머 정지');
+    }
+
+    function resetCountdown() {
+      clearInterval(countdownInterval);
+
+      const inputContainer = document.getElementById('input-container');
+      const timerContainer = document.getElementById('timer-container');
+      const hoursInput = document.getElementById('hours');
+      const minutesInput = document.getElementById('minutes');
+      const secondsInput = document.getElementById('seconds');
+      const timerDisplay = document.getElementById('timer');
+
+      inputContainer.style.display = 'block';
+      timerContainer.style.display = 'none';
+
+      hoursInput.value = '0';
+      minutesInput.value = '0';
+      secondsInput.value = '0';
+
+      timerDisplay.textContent = '00:00:00';
+    }
+
+    function updateTimerDisplay() {
+      const timerDisplay = document.getElementById('timer');
+      const hours = Math.floor(timeLeft / 3600);
+      const minutes = Math.floor((timeLeft % 3600) / 60);
+      const seconds = timeLeft % 60;
+      const formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      timerDisplay.textContent = formattedTime;
+    }
+  </script>
+
+</body>
+</html>
+
