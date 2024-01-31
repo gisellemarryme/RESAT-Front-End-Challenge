@@ -1,1 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TO-DO LIST</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display:flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(to bottom ,  #5bb44f , #8145a8);
+            margin: 0;
+            height: 100vh;
+            font-size: 24px;
+        }
 
+        .todo-container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding:20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.8);
+        }
+
+        .todo-item {
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .priority-button, 
+        .filter-button,
+        label,
+        button{
+            font-size:1em;
+        }
+
+        .selected {
+            background-color: #ff6600;
+            color: white;
+        }
+
+        .filter-button {
+            margin-right:10px;
+        }
+
+        #task{
+            font-size:1em;
+            padding:8px;
+        }
+
+        .filter-selected{
+            background-color: #ff6600;
+            color: white;
+        }
+
+        
+    </style>
+</head>
+<body>
+
+<div class="todo-container">
+    <h2>TO-DO LIST</h2>
+    
+     <!-- 할 일 필터 버튼 -->
+    <div>
+        <button class="filter-button" onclick="showAllTodos()">전체</button>
+        <button class="filter-button" onclick="showCompletedTodos()">해결</button>
+        <button class="filter-button" onclick="showUncompletedTodos()">미해결</button>
+    </div>
+
+    <!-- 할 일 추가 폼 -->
+    <form id="todoForm">
+        <br>
+        <label for="task">할 일을 작성해주세요: </label>
+        <input type="text" id="task" required>
+        
+        <br>
+        <br>
+        <label>우선 순위:</label>
+        <button class="priority-button" type="button" onclick="setPriority('낮음')">낮음</button>
+        <button class="priority-button" type="button" onclick="setPriority('보통')">보통</button>
+        <button class="priority-button" type="button" onclick="setPriority('높음')">높음</button>
+        <button class="priority-button" type="button" onclick="setPriority('아주 높음')">아주 높음</button>
+        
+        <button type="button" onclick="addTodo()">추가</button>
+    </form>
+
+    <!-- 할 일 목록 -->
+    <ul id="todoList"></ul>
+</div>
+
+<script>
+    // 할 일 목록 데이터
+    let todos = [];
+    let selectedFilter = '전체';
+    let selectedPriority = '보통';
+    let editingIndex = -1;
+
+    function updateFilterButtons() {
+        const filterButtons = document.querySelectorAll('.filter-button');
+        filterButtons.forEach(button => {
+            if (button.textContent.toLowerCase() === selectedFilter) {
+                button.classList.add('filter-selected');
+            } else {
+                button.classList.remove('filter-selected');
+            }
+        });
+    }
+
+    // 전체 할 일 보기 함수
+    function showAllTodos() {
+        selectedFilter = '전체';
+        displayTodos();
+        updateFilterButtons();
+    }
+
+    // 해결된 할 일만 보기 함수
+    function showCompletedTodos() {
+        selectedFilter = '해결';
+        const completedTodos = todos.filter(todo => todo.completed);
+        displayFilteredTodos(completedTodos);
+        updateFilterButtons();
+    }
+
+    // 미해결된 할 일만 보기 함수
+    function showUncompletedTodos() {
+        selectedFilter = '미해결';
+        const uncompletedTodos = todos.filter(todo => !todo.completed);
+        displayFilteredTodos(uncompletedTodos);
+        updateFilterButtons();
+    }
+
+    // 우선순위 설정 함수
+    function setPriority(priority) {
+        selectedPriority = priority;
+        updatePriorityButtons();
+    }
+
+    // 우선순위 버튼 스타일 업데이트 함수
+    function updatePriorityButtons() {
+        const buttons = document.querySelectorAll('.priority-button');
+        buttons.forEach(button => {
+            if (button.textContent === selectedPriority) {
+                button.classList.add('selected');
+            } else {
+                button.classList.remove('selected');
+            }
+        });
+    }
+
+    // 할 일 추가 함수
+    function addTodo() {
+        const taskInput = document.getElementById('task');
+
+        if (editingIndex !== -1) {
+            // 수정 중이면 기존 항목을 업데이트
+            todos[editingIndex].task = taskInput.value;
+            todos[editingIndex].priority = selectedPriority;
+            editingIndex = -1; // 수정 완료 후 초기화
+        } else {
+            // 새로운 할 일 추가
+            const newTodo = {
+                task: taskInput.value,
+                priority: selectedPriority,
+                completed: false
+            };
+            todos.push(newTodo);
+        }
+
+        displayTodos();
+        
+        // 입력 폼 초기화
+        taskInput.value = '';
+        // 우선순위 초기화
+        selectedPriority = '보통';
+        updatePriorityButtons();
+    }
+
+    // 할 일 목록을 화면에 표시하는 함수
+    function displayTodos() {
+        const todoList = document.getElementById('todoList');
+        todoList.innerHTML = ''; // 기존 목록 초기화
+
+        todos.forEach((todo, index) => {
+            const listItem = document.createElement('li');
+            listItem.classList.add('todo-item');
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.checked = todo.completed;
+            checkbox.addEventListener('change', () => toggleTodoCompletion(index));
+
+            const taskText = document.createTextNode(`${todo.task} (우선순위: ${todo.priority})`);
+            
+            listItem.appendChild(checkbox);
+            listItem.appendChild(taskText);
+
+            // 목록 항목 클릭 시 수정
+            listItem.addEventListener('click', () => editTodo(index));
+
+            todoList.appendChild(listItem);
+        });
+    }
+
+    // 할 일 완료 여부 토글 함수
+    function toggleTodoCompletion(index) {
+        todos[index].completed = !todos[index].completed;
+        displayTodos();
+    }
+
+    // 필터링된 할 일 목록을 화면에 표시하는 함수
+    function displayFilteredTodos(filteredTodos) {
+        const todoList = document.getElementById('todoList');
+        todoList.innerHTML = ''; // 기존 목록 초기화
+
+        filteredTodos.forEach((todo, index) => {
+            const listItem = document.createElement('li');
+            listItem.classList.add('todo-item');
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.checked = todo.completed;
+            checkbox.addEventListener('change', () => toggleTodoCompletion(index));
+
+            const taskText = document.createTextNode(`${todo.task} (우선순위: ${todo.priority})`);
+
+            listItem.appendChild(checkbox);
+            listItem.appendChild(taskText);
+
+            // 목록 항목 클릭 시 수정
+            listItem.addEventListener('click', () => editTodo(index));
+
+            todoList.appendChild(listItem);
+        });
+    }
+
+    // 할 일 수정 함수
+    function editTodo(index) {
+        const taskInput = document.getElementById('task');
+        taskInput.value = todos[index].task;
+
+        selectedPriority = todos[index].priority;
+        updatePriorityButtons();
+
+        editingIndex = index; // 수정 모드로 설정
+    }
+
+    // 페이지 로드 시 초기화
+    updatePriorityButtons();
+</script>
+
+</body>
+</html>
