@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>이미지 슬라이드</title>
+
+  <style>
+
+    /*이미지 슬라이드 감싸는 컨테이너*/
+    #slider-container {    
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      margin: auto;
+      overflow: hidden;
+    }
+
+    /*이미지 슬라이더*/
+    #slider { 
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+    }
+
+    .slide {
+      min-width: 100%;
+      display: flex;
+      justify-content: center;
+      /* text-align: center; */
+      box-sizing: border-box;
+    }
+
+    .slide img{
+        display: inline-block;
+        margin: 0 auto;
+        /* max-width: 100%; */
+        height: auto;
+    }
+
+    /* 이전, 다음 버튼 */
+    #prev, #next {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    #prev {
+      left: 300px;
+    }
+
+    #next {
+      right: 300px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="slider-container">
+  <div id="slider">
+    <div class="slide"><img src="https://i.namu.wiki/i/geGngQMnvmK2g3wuKU4O1uNs8Ix1HXQULk9PrnT57lHOlU4AxL9qsNCYXOOY9DIqPWtXnphq8G6NzCcvzv-ppQ.webp" alt="Image 1"></div>
+    <div class="slide"><img src="https://i.namu.wiki/i/JNKvslt1j4AioYDmWSiZdcJBzwWD2-XibS8JYqMiQcSpF5GSUzYHVdVBsSOPElngPI5CfiAUf0oM3bXXzFr30w.webp" alt="Image 2"></div>
+    <div class="slide"><img src="https://i.namu.wiki/i/Yu5BDHQYknKmChLkS9bgOR0jqfE3ojWF_VgjMJ3nhbmztCFy_qp8pFs0eN4q7sM8FYnCU8Nv89wAPcBPMXo3Sg.webp" alt="Image 3"></div>
+    
+  </div>
+  <div id="prev">&lt;</div>
+  <div id="next">&gt;</div>
+</div>
+
+<script>
+  const slider = document.getElementById('slider');
+  const prevBtn = document.getElementById('prev');
+  const nextBtn = document.getElementById('next');
+
+  let currentIndex = 0;
+
+  function showSlide(index) {
+    const slideWidth = slider.querySelector('.slide').offsetWidth;
+    const newTransformValue = -index * slideWidth + 'px';
+    slider.style.transform = 'translateX(' + newTransformValue + ')';
+  }
+
+  function showPrevSlide() {
+    currentIndex = (currentIndex - 1 + slider.childElementCount) % slider.childElementCount;
+    showSlide(currentIndex);
+  }
+
+  function showNextSlide() {
+    currentIndex = (currentIndex + 1) % slider.childElementCount;
+    showSlide(currentIndex);
+  }
+
+  prevBtn.addEventListener('click', showPrevSlide);
+  nextBtn.addEventListener('click', showNextSlide);
+</script>
+
+</body>
+</html>
