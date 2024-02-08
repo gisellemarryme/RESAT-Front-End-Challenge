@@ -60,6 +60,15 @@
       display: flex; /* 햄버거 아이콘 클릭하면 메뉴 보임 */
     }
   }
+
+  img{
+    width: 80%;
+    height: auto;
+    display: block;
+    margin: 10px auto 0;
+    max-width: 80%;
+  }
+
 </style>
 </head>
 <body>
@@ -74,6 +83,9 @@
   <div class="hamburger-menu">&#9776;</div> <!-- 햄버거 아이콘 -->
 </nav>
 
+<!-- 이미지 추가 -->
+<img src="https://pbs.twimg.com/media/FjBhw3IaEAASrFt.jpg" alt="image1">
+
 <script>
   // 햄버거 아이콘 클릭시 메뉴를 토글
   const menuToggle = document.querySelector('.hamburger-menu'); //hambyger-menu를 찾아 menuToggle 변수에 할당
@@ -82,6 +94,7 @@
   menuToggle.addEventListener('click', () => { //menuToggle 변수에 클릭 이벤트리스너 추가
     menu.classList.toggle('show'); //클릭 이벤트 발생 시 show 토글
   });
+
 </script>
 
 </body>
