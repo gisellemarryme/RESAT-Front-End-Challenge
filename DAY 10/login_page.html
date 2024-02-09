@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+        }
+
+        .top-right-text{
+            position: fixed;
+            top: 30px;
+            right: 100px;
+            color: #4b4b4b;
+        }
+
+        input[type="text"], input[type="password"] {
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 200px;
+        }
+
+        input[type="submit"] {
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 5px;
+            border: none;
+            background-color: #ffae00;
+            color: #000000;
+            cursor: pointer;
+        }
+
+        /* 토스트 팝업 스타일 */
+        .toast {
+            visibility: hidden;
+            min-width: 250px;
+            margin-left: -125px;
+            padding: 16px 24px;
+            border-radius: 25px; /* 토스트 팝업을 좀 둥근 네모로 수정해보려고 했는데 영 적용이 되는지 모르겠음 */
+            border: none;
+            background-color: #ffae00;
+            color: #000000;
+            text-align: center;
+            border-radius: 2px;
+            padding: 16px;
+            position: fixed;
+            z-index: 1;
+            left: 50%;
+            top: 50px;
+        }
+
+        /* 토스트 팝업 애니메이션 스타일 */
+        .toast.show {
+            visibility: visible;
+            -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+
+        @-webkit-keyframes fadein {  /* 화면 등장 애니메이션 */
+            from {top: 0; opacity: 0;} /* top 0에서 top 30px으로 동장, 투명도 0 */
+            to {top: 50px; opacity: 1;}
+        }
+ 
+        @keyframes fadein  { /* 화면 등장 애니메이션 */
+            from {top: 0; opacity: 0;}
+            to {top: 50px; opacity: 1;}
+        }
+
+        @-webkit-keyframes fadeout { /* 화면 퇴장 애니메이션 */
+            from {top: 50px; opacity: 1;} /* top 30px에서 top 0으로 퇴장 */
+            to {top: 0; opacity: 0;}
+        }
+
+        @keyframes fadeout { /* 화면 퇴장 애니메이션 */
+            from {top: 50px; opacity: 1;}
+            to {top: 0; opacity: 0;}
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Login</h2>
+        <div class="top-right-text">ID는 1234&nbsp;&nbsp;Password는 qwer</div>
+        <form id="loginForm">
+            <input type="text" id="username" placeholder="ID">
+            <br>
+            <input type="password" id="password" placeholder="Password">
+            <br>
+            <input type="submit" value="Login"> <!-- 로그인 버튼 -->
+        </form>
+        <div id="message" class="toast"></div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+
+            // 아이디, 비밀번호 임의 지정
+            var validUsername = '1234';
+            var validPassword = 'qwer';
+
+            if (username === validUsername && password === validPassword) {
+                showNotification('로그인이 되었습니다.');
+            } else {
+                showNotification('ID 혹은 PW가 잘못되었습니다.');
+            }
+        });
+
+        function showNotification(message){
+            var toast = document.getElementById("message");
+            toast.innerHTML=message;
+            toast.className="toast show";
+            setTimeout(function(){toast.className=toast.className.replace("show","");},3000);
+        }
+
+        // function showMessage(message) {
+        //     document.getElementById('message').innerHTML = message;
+        // } //토스트 팝업 아닌 그냥 텍스트는 이걸로
+
+    </script>
+</body>
+</html>
